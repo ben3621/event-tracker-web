@@ -1,0 +1,18 @@
+// src/firebaseConfig.js
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBedGuNyLT0jjhPOr6ECZl5SJlUWMPcijs",
+  authDomain: "event-tracker-5587c.firebaseapp.com",
+  projectId: "event-tracker-5587c",
+  storageBucket: "event-tracker-5587c.firebasestorage.app",
+  messagingSenderId: "981863849443",
+  appId: "1:981863849443:web:917e5dc7de6ff9ce6754d6",
+  measurementId: "G-L41S7Q6SDY"
+};
+
+const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const db = getFirestore(app);
