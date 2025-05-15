@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import './star.css';
 import { useAuth } from "./AuthContext";
 import AuthUI from "./AuthUI";
 import Calendar from "react-calendar";
@@ -41,7 +42,8 @@ export default function App() {
     setForm({ ...form, rating: value });
   };
 
-  const addEvent = async () => {
+  const addEvent = async (e) => {
+    e.target.reset();
     if (!user || !form.title || !form.date || !form.type) return;
     const eventsRef = collection(db, "users", user.uid, "events");
     await addDoc(eventsRef, form);
@@ -63,7 +65,7 @@ export default function App() {
         <AuthUI />
         {user && (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+            <form onSubmit={e => { e.preventDefault(); addEvent(e); }} className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
               <input name="title" placeholder="Title" value={form.title} onChange={handleChange}
                 className="px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500" />
               <input name="date" type="date" value={form.date} onChange={handleChange}
@@ -93,7 +95,7 @@ export default function App() {
             </div>
             <div className="mt-4">
               <h3 className="font-semibold mb-2">Rating</h3>
-              <div className="flex gap-0.5 text-2xl">
+              <div className="star-container">
                 {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((val) => (
                   <span
                     key={val}
@@ -103,13 +105,17 @@ export default function App() {
                     className="cursor-pointer"
                     style={{ color: (hoverRating || form.rating) >= val ? "#facc15" : "#4b5563" }}
                   >
-                    {(hoverRating || form.rating) >= val ? (val % 1 === 0 ? "★" : "⯨") : "☆"}
+                    
+    <span className={`star ${form.rating >= val ? 'full' : (form.rating + 0.5 === val ? 'half' : '')}`}>
+      ★
+    </span>
+    
                   </span>
                 ))}
               </div>
             </div>
             <button
-              onClick={addEvent}
+              type="submit"
               className="w-full mt-6 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold py-2 rounded-lg shadow-md transition"
             >
               Add Event
