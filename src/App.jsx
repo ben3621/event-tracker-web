@@ -45,6 +45,8 @@ export default function App() {
     if (!user || !form.title || !form.date || !form.type) return;
     const eventsRef = collection(db, "users", user.uid, "events");
     await addDoc(eventsRef, form);
+    document.querySelector("form")?.reset();
+    setForm({ title: "", date: new Date().toISOString().split("T")[0], type: "", location: "", notes: "", rating: 0, tags: "" });
     setForm({ title: "", date: new Date().toISOString().split("T")[0], type: "", location: "", notes: "", rating: 0, tags: "" });
   };
 
@@ -91,7 +93,7 @@ export default function App() {
             </div>
             <div className="mt-4">
               <h3 className="font-semibold mb-2">Rating</h3>
-              <div className="flex gap-1 text-2xl">
+              <div className="flex gap-0.5 text-2xl">
                 {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((val) => (
                   <span
                     key={val}
@@ -101,7 +103,7 @@ export default function App() {
                     className="cursor-pointer"
                     style={{ color: (hoverRating || form.rating) >= val ? "#facc15" : "#4b5563" }}
                   >
-                    {val % 1 === 0 ? "★" : "☆"}
+                    {(hoverRating || form.rating) >= val ? (val % 1 === 0 ? "★" : "⯨") : "☆"}
                   </span>
                 ))}
               </div>
