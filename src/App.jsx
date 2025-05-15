@@ -64,7 +64,7 @@ export default function App() {
         <AuthUI />
         {user && (
           <>
-            <form onSubmit={e => { e.preventDefault(); addEvent(e); }} className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6"><form onSubmit={e => { e.preventDefault(); addEvent(e); }} className="contents">
               <input name="title" placeholder="Title" value={form.title} onChange={handleChange}
                 className="px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500" />
               <input name="date" type="date" value={form.date} onChange={handleChange}
@@ -73,8 +73,7 @@ export default function App() {
                 className="px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500" />
               <input name="tags" placeholder="Tags" value={form.tags} onChange={handleChange}
                 className="px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500" />
-            </div>
-            </form>
+            </form></div>
             <textarea name="notes" placeholder="Notes" value={form.notes} onChange={handleChange}
               className="w-full mt-4 px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500" />
             <div className="mt-4">
