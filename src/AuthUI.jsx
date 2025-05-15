@@ -65,7 +65,7 @@ export default function AuthUI() {
       ) : (
         <>
           <h2 className="text-2xl font-semibold text-center text-gray-900 mb-6">
-            {isSignup ? "Create an Apple ID" : "Sign in with your Apple ID"}
+            {isSignup ? "Create an Account" : "Sign in to Your Account"}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
@@ -109,7 +109,7 @@ export default function AuthUI() {
               }}
               className="block text-sm text-blue-600 hover:underline"
             >
-              {isSignup ? "Already have an account? Sign in" : "Create an Apple ID"}
+              {isSignup ? "Already have an account? Sign in" : "Create an account"}
             </button>
           </div>
           {message && (
