@@ -1,50 +1,38 @@
-import { useAuth } from "./AuthContext";
+import { useContext, useState } from "react";
+import { AuthContext } from "./AuthContext";
+import { Input } from "./components/ui/input";
+import { Button } from "./components/ui/button";
 
-export default function AuthUI() {
-  const { user, login, logout } = useAuth();
+export default function AuthUI({ children }) {
+  const { user, login, register, forgotPassword } = useContext(AuthContext);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [mode, setMode] = useState("login");
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const email = e.target.email.value;
-    const password = e.target.password.value;
-    login(email, password);
+    if (mode === "login") login(email, password);
+    else if (mode === "register") register(email, password);
+    else forgotPassword(email);
   };
 
+  if (user) return children;
+
   return (
-    <div className="mb-6">
-      {!user ? (
-        <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto">
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            required
-            className="w-full px-4 py-2 rounded-md bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-300 dark:border-gray-600"
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            required
-            className="w-full px-4 py-2 rounded-md bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-300 dark:border-gray-600"
-          />
-          <button
-            type="submit"
-            className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white py-2 rounded-md font-semibold"
-          >
-            Sign In / Register
-          </button>
-        </form>
-      ) : (
-        <div className="text-center">
-          <p className="mb-2">Signed in as <strong>{user.email}</strong></p>
-          <button
-            onClick={logout}
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-medium"
-          >
-            Sign Out
-          </button>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-700 to-pink-500 text-white p-4">
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md text-black w-full max-w-sm space-y-4">
+        <h2 className="text-xl font-bold">{mode === "login" ? "Sign In" : mode === "register" ? "Create Account" : "Forgot Password"}</h2>
+        <Input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        {mode !== "forgot" && (
+          <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        )}
+        <Button type="submit" className="w-full">{mode === "login" ? "Sign In" : mode === "register" ? "Register" : "Send Reset Email"}</Button>
+        <div className="flex justify-between text-sm">
+          {mode !== "register" && <button type="button" className="underline" onClick={() => setMode("register")}>Create Account</button>}
+          {mode !== "login" && <button type="button" className="underline" onClick={() => setMode("login")}>Back to Login</button>}
+          {mode !== "forgot" && <button type="button" className="underline" onClick={() => setMode("forgot")}>Forgot Password?</button>}
         </div>
-      )}
+      </form>
     </div>
   );
 }
