@@ -42,6 +42,7 @@ export default function App() {
   };
 
   const addEvent = async (e) => {
+    e.preventDefault();
     e.target.reset();
     if (!user || !form.title || !form.date || !form.type) return;
     const eventsRef = collection(db, "users", user.uid, "events");
@@ -74,6 +75,7 @@ export default function App() {
               <input name="tags" placeholder="Tags" value={form.tags} onChange={handleChange}
                 className="px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500" />
             </div>
+            </form>
             </form>
             <textarea name="notes" placeholder="Notes" value={form.notes} onChange={handleChange}
               className="w-full mt-4 px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500" />
