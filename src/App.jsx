@@ -81,48 +81,82 @@ export default function App() {
       return 0;
     });
 
-  const calendarEvents = events.filter(event => event.date === calendarDate.toISOString().split("T")[0]);
+  const selectedDate = calendarDate.toISOString().split("T")[0];
+  const calendarEvents = events.filter(event => event.date === selectedDate);
+
+  const getMonthKey = (date) => date.slice(0, 7); // "YYYY-MM"
+  const currentMonth = new Date().toISOString().slice(0, 7);
+  const currentMonthCount = events.filter(e => getMonthKey(e.date) === currentMonth).length;
 
   const tileClassName = ({ date, view }) => {
     if (view === 'month') {
       const d = date.toISOString().split('T')[0];
       const match = events.find(e => e.date === d);
       if (match) {
-        return `bg-opacity-50 rounded-full ${match.type === 'Theater' ? 'bg-red-300' : match.type === 'Opera' ? 'bg-blue-300' : 'bg-green-300'}`;
+        return `highlight-${match.type.toLowerCase()}`;
       }
     }
     return null;
   };
 
   return (
-    <div className="p-4 max-w-4xl mx-auto font-sans bg-gray-50 min-h-screen">
+    <div className="p-6 max-w-5xl mx-auto font-sans bg-white min-h-screen text-gray-800">
       <AuthUI />
-      <h1 className="text-3xl font-bold mb-4 text-red-700">🎭 Event Attendance Tracker</h1>
+      <h1 className="text-4xl font-extrabold mb-6 text-center text-gray-900">🎭 Event Attendance Tracker</h1>
       {user ? (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-            <input name="title" placeholder="Title" value={form.title} onChange={handleChange} className="border px-3 py-2 rounded shadow-sm" />
-            <input name="date" type="date" value={form.date} onChange={handleChange} className="border px-3 py-2 rounded shadow-sm" />
-            <input name="type" placeholder="Type (e.g., Theater)" value={form.type} onChange={handleChange} className="border px-3 py-2 rounded shadow-sm" />
-            <input name="location" placeholder="Location" value={form.location} onChange={handleChange} className="border px-3 py-2 rounded shadow-sm" />
-            <input name="tags" placeholder="Tags" value={form.tags} onChange={handleChange} className="border px-3 py-2 rounded shadow-sm" />
-            <textarea name="notes" placeholder="Notes" value={form.notes} onChange={handleChange} className="border px-3 py-2 rounded shadow-sm col-span-2" />
-            <div className="col-span-2">Rating:
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            {["title", "date", "type", "location", "tags"].map(field => (
+              <input
+                key={field}
+                name={field}
+                type={field === "date" ? "date" : "text"}
+                placeholder={field[0].toUpperCase() + field.slice(1)}
+                value={form[field]}
+                onChange={handleChange}
+                className="border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-black"
+              />
+            ))}
+            <textarea
+              name="notes"
+              placeholder="Notes"
+              value={form.notes}
+              onChange={handleChange}
+              className="col-span-2 border rounded-md px-3 py-2 shadow-sm"
+            />
+            <div className="col-span-2 text-sm">Rating:
               {[1,2,3,4,5].map(r => (
-                <span key={r} onClick={() => handleRating(r)} style={{ cursor: "pointer", color: form.rating >= r ? "gold" : "lightgray", fontSize: "20px" }}>★</span>
+                <span
+                  key={r}
+                  onClick={() => handleRating(r)}
+                  className="cursor-pointer text-xl"
+                  style={{ color: form.rating >= r ? "gold" : "#ddd" }}
+                >★</span>
               ))}
             </div>
-            <button onClick={addEvent} className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded shadow">Add Event</button>
+            <button
+              onClick={addEvent}
+              className="col-span-2 bg-black text-white py-2 rounded-md font-medium hover:bg-gray-800 transition"
+            >
+              Add Event
+            </button>
           </div>
-          <div className="flex justify-between items-center mb-3">
-            <input placeholder="Filter..." value={filter} onChange={(e) => setFilter(e.target.value)} className="border px-3 py-2 w-full max-w-xs rounded shadow-sm" />
+
+          <div className="flex justify-between items-center mb-4">
+            <input
+              placeholder="Filter..."
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="border px-3 py-2 rounded-md w-full max-w-sm shadow-sm"
+            />
           </div>
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white shadow-sm rounded-lg overflow-hidden">
-              <thead className="bg-gray-100 text-left sticky top-0">
+
+          <div className="overflow-x-auto mb-8">
+            <table className="min-w-full bg-white border rounded-lg shadow">
+              <thead className="bg-gray-100 sticky top-0">
                 <tr>
                   {["Title", "Date", "Type", "Location", "Notes", "Rating", "Tags"].map(key => (
-                    <th key={key} className="px-4 py-2 cursor-pointer text-sm font-semibold text-gray-700" onClick={() => handleSort(key.toLowerCase())}>
+                    <th key={key} className="px-4 py-2 text-left text-sm font-semibold cursor-pointer" onClick={() => handleSort(key.toLowerCase())}>
                       {key} {sortKey === key.toLowerCase() ? (sortAsc ? "▲" : "▼") : ""}
                     </th>
                   ))}
@@ -143,31 +177,34 @@ export default function App() {
               </tbody>
             </table>
           </div>
-          <div className="mt-6">
-            <h2 className="text-lg font-semibold text-gray-700 mb-2">Events Attended This Month:</h2>
+
+          <div className="mb-6">
+            <h2 className="text-2xl font-semibold mb-1">Events Attended This Month: {currentMonthCount}</h2>
             <Calendar
               onChange={setCalendarDate}
               value={calendarDate}
-              className="rounded border max-w-md"
+              className="rounded border shadow max-w-md"
               tileClassName={tileClassName}
               maxDetail="month"
               showFixedNumberOfWeeks
               showNeighboringMonth
             />
-            <div className="pt-3">
-              <h3 className="text-md font-medium text-gray-800 mb-1">On {calendarDate.toISOString().split("T")[0]}</h3>
+            <div className="pt-4">
+              <h3 className="text-md font-medium text-gray-800 mb-1">On {selectedDate}</h3>
               {calendarEvents.length ? (
-                <ul className="list-disc pl-5">
+                <ul className="list-disc pl-5 text-sm">
                   {calendarEvents.map((event, index) => (
                     <li key={index}>{event.title} – {event.type} @ {event.location}</li>
                   ))}
                 </ul>
-              ) : <p className="text-sm text-gray-500">No events on this day.</p>}
+              ) : (
+                <p className="text-sm text-gray-500">No events on this day.</p>
+              )}
             </div>
           </div>
         </>
       ) : (
-        <p className="text-gray-500 mt-8">Please log in to use the tracker.</p>
+        <p className="text-center text-gray-500 mt-12">Please log in to use the tracker.</p>
       )}
     </div>
   );
