@@ -9,11 +9,14 @@
   "dependencies": {
     "firebase": "^11.7.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-calendar": "^4.0.0"
+    "react-calendar": "^4.0.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.0",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.6",
     "vite": "^4.0.0"
   }
 }
