@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import './star.css';
 import { useAuth } from "./AuthContext";
 import AuthUI from "./AuthUI";
 import Calendar from "react-calendar";
@@ -75,6 +74,7 @@ export default function App() {
               <input name="tags" placeholder="Tags" value={form.tags} onChange={handleChange}
                 className="px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500" />
             </div>
+            </form>
             <textarea name="notes" placeholder="Notes" value={form.notes} onChange={handleChange}
               className="w-full mt-4 px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500" />
             <div className="mt-4">
