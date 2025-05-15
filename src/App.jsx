@@ -48,6 +48,7 @@ export default function App() {
     if (!user || !form.title || !form.date || !form.type) return;
     const eventsRef = collection(db, "users", user.uid, "events");
     await addDoc(eventsRef, form);
+    document.querySelector("form").reset();
     setForm({
       title: "",
       date: new Date().toISOString().split("T")[0],
@@ -117,7 +118,25 @@ export default function App() {
                 className="border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-black"
               />
             ))}
-            <textarea
+            <div className="col-span-2">
+              <label className="block font-medium mb-1">Type:</label>
+              <div className="flex flex-wrap gap-4">
+                {["Opera", "Theatre", "Music", "Art/Gallery"].map((option) => (
+                  <label key={option} className="inline-flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="type"
+                      value={option}
+                      checked={form.type === option}
+                      onChange={handleChange}
+                      className="accent-black"
+                    />
+                    <span>{option}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+<textarea
               name="notes"
               placeholder="Notes"
               value={form.notes}
